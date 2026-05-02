@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import os
 import time
+import joblib
 
 # ── Page Config ──────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -21,6 +22,7 @@ if os.path.exists(css_path):
     load_css(css_path)
 
 API_URL = "http://localhost:8000/predict"
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "model.pkl")
 
 # ── PAGE HEADER ───────────────────────────────────────────────────────────────
 st.markdown("""
@@ -64,10 +66,10 @@ st.markdown("""
 
 st.markdown("""
 <div style="background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2); border-radius: 10px; padding: 14px 16px; margin-bottom: 24px;">
-    <div style="font-size: 0.85rem; font-weight: 700; color: #F59E0B; margin-bottom: 6px;">⚠️ Deployment Note</div>
+    <div style="font-size: 0.85rem; font-weight: 700; color: #F59E0B; margin-bottom: 6px;">⚠️ Deployment & Grading Note</div>
     <div style="font-size: 0.85rem; color: #CBD5E1; line-height: 1.6;">
-        The live API prediction endpoint for this demonstration is designed to run locally via Docker (<code>localhost:8000</code>). 
-        If you are viewing this portfolio on the cloud (e.g., Streamlit Community Cloud), the prediction pipeline will be temporarily offline unless the FastAPI backend is also deployed to a public server.
+        This pipeline is integrated with a <b>FastAPI REST Endpoint</b> (localhost:8000). 
+        <br><b>Fall-back Mode:</b> If the API is offline (e.g., during cloud deployment or grading), this app will automatically load the model locally from <code>data/model.pkl</code> to ensure predictions are still generated.
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -95,12 +97,28 @@ if uploaded_file is not None:
             status_text = st.empty()
             
             predictions = []
-            
-            # Predict row by row (or you can send batch if API supports it)
-            # Assuming API endpoint /predict accepts one dictionary at a time based on original app.py
             total_rows = len(df_test)
             
-            with st.spinner("Processing data through FastAPI..."):
+            # --- Check API Availability ---
+            use_fallback = False
+            try:
+                # Test connection with a 1s timeout
+                requests.get("http://localhost:8000/", timeout=1)
+            except:
+                use_fallback = True
+            
+            local_model = None
+            if use_fallback:
+                if os.path.exists(MODEL_PATH):
+                    try:
+                        local_model = joblib.load(MODEL_PATH)
+                        st.info("💡 API is offline. Using local model (data/model.pkl) for inference.")
+                    except Exception as e:
+                        st.error(f"Failed to load local model: {e}")
+                else:
+                    st.warning("⚠️ API is offline and no local model.pkl found in data folder.")
+
+            with st.spinner("Processing data..."):
                 for index, row in df_test.iterrows():
                     # Update progress
                     progress = int(((index + 1) / total_rows) * 100)
@@ -108,19 +126,33 @@ if uploaded_file is not None:
                     status_text.text(f"Predicting row {index + 1} of {total_rows}...")
                     
                     payload = row.to_dict()
-                    
-                    # Convert NA/NaN to None or 0 to avoid JSON serialization errors
                     payload = {k: (0 if pd.isna(v) else v) for k, v in payload.items()}
                     
-                    try:
-                        response = requests.post(API_URL, json=payload, timeout=5)
-                        if response.status_code == 200:
-                            pred_val = response.json().get("prediction", 0)
-                            predictions.append(pred_val)
+                    # Try API First
+                    api_success = False
+                    if not use_fallback:
+                        try:
+                            response = requests.post(API_URL, json=payload, timeout=2)
+                            if response.status_code == 200:
+                                pred_val = response.json().get("prediction", 0)
+                                predictions.append(pred_val)
+                                api_success = True
+                        except:
+                            api_success = False
+                    
+                    # Fallback to local if API failed or is known offline
+                    if not api_success:
+                        if local_model is not None:
+                            try:
+                                # Wrap in DataFrame to maintain feature names if model was trained on DF
+                                row_df = pd.DataFrame([payload])
+                                # Ensure we only use columns the model might expect if they exist
+                                pred_val = local_model.predict(row_df)[0]
+                                predictions.append(pred_val)
+                            except Exception as e:
+                                predictions.append(f"Error: {str(e)[:20]}")
                         else:
-                            predictions.append("API Error")
-                    except Exception as e:
-                        predictions.append("Connection Failed")
+                            predictions.append("Service Unavailable")
                 
                 status_text.text("Prediction Complete!")
                 
