@@ -1,0 +1,203 @@
+/* =============================================
+   PORTFOLIO DS - PREMIUM DARK THEME
+   Muhammad Rizki Fadhilla
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* === GLOBAL === */
+html, body, [class*="css"] {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* === MAIN BACKGROUND === */
+.main {
+    background-color: #050810;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(29, 78, 216, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(20, 184, 166, 0.1) 0px, transparent 50%);
+    background-attachment: fixed;
+}
+
+.stApp {
+    background-color: transparent;
+}
+
+/* === SIDEBAR === */
+section[data-testid="stSidebar"] {
+    background-color: rgba(10, 14, 26, 0.85);
+    backdrop-filter: blur(12px);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+section[data-testid="stSidebar"] * {
+    color: #94A3B8 !important;
+}
+
+section[data-testid="stSidebar"] [data-testid="stSidebarNav"] span {
+    font-weight: 500;
+}
+
+/* === HEADINGS === */
+h1, h2, h3, h4, h5, h6 {
+    color: #F8FAFC !important;
+    font-family: 'Inter', sans-serif !important;
+    letter-spacing: -0.02em;
+}
+
+/* === BODY TEXT === */
+p, li, span, div {
+    color: #CBD5E1;
+}
+
+/* === METRIC CARDS === */
+[data-testid="metric-container"] {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+[data-testid="metric-container"]:hover {
+    transform: translateY(-2px);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-testid="metric-container"] label {
+    color: #64748B !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+}
+
+[data-testid="metric-container"] [data-testid="stMetricValue"] {
+    color: #F8FAFC !important;
+    font-size: 2rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #E2E8F0, #94A3B8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* === BUTTONS === */
+.stButton > button {
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+}
+
+.stButton > button:hover {
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* === INPUTS === */
+.stTextInput input,
+.stNumberInput input,
+.stSelectbox select,
+.stTextArea textarea {
+    background-color: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 10px !important;
+    color: #F1F5F9 !important;
+    font-size: 0.95rem;
+    padding: 12px;
+    transition: all 0.2s ease;
+}
+
+.stTextInput input:focus,
+.stNumberInput input:focus {
+    background-color: rgba(15, 23, 42, 0.9) !important;
+    border-color: #3B82F6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+}
+
+/* === SELECTBOX === */
+.stSelectbox > div > div {
+    background-color: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 10px !important;
+    color: #F1F5F9 !important;
+}
+
+/* === SUCCESS / INFO / WARNING BOXES === */
+.stSuccess {
+    background-color: rgba(16, 185, 129, 0.05);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 12px;
+    color: #A7F3D0 !important;
+    backdrop-filter: blur(10px);
+}
+
+.stInfo {
+    background-color: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    color: #BFDBFE !important;
+    backdrop-filter: blur(10px);
+}
+
+.stWarning {
+    background-color: rgba(245, 158, 11, 0.05);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 12px;
+    color: #FDE68A !important;
+    backdrop-filter: blur(10px);
+}
+
+/* === DATAFRAME/TABLE === */
+.stDataFrame {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* === EXPANDER === */
+.streamlit-expanderHeader {
+    background-color: rgba(15, 23, 42, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 10px !important;
+    color: #F8FAFC !important;
+    font-weight: 500 !important;
+}
+
+/* === DIVIDER === */
+hr {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    margin: 2.5rem 0 !important;
+}
+
+/* === TAB STYLING === */
+.stTabs [data-baseweb="tab-list"] {
+    background-color: transparent;
+    gap: 8px;
+}
+.stTabs [data-baseweb="tab"] {
+    background-color: rgba(15, 23, 42, 0.4);
+    border-radius: 8px 8px 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: none;
+    padding: 10px 20px;
+    color: #94A3B8;
+}
+.stTabs [data-baseweb="tab"][aria-selected="true"] {
+    background-color: rgba(30, 41, 59, 0.8);
+    color: #F8FAFC;
+    border-top: 2px solid #3B82F6;
+}
